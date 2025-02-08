@@ -18,7 +18,7 @@ class ReceiptControllerSpec extends Specification{
     def " calls repository and returns the needed Receipt "(){
         given:
         def id = "12222222"
-        def recieptPoints = [points: 32]as Receipt
+        def recieptPoints = [points: 32.0]as Receipt
         when:
         def result = fixture.getPoints(id)
         then:

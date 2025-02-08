@@ -19,7 +19,7 @@ public class ReceiptController {
 
 
    @GetMapping("/receipts/{id}/points")
-   public ReceiptsPoints getPoints(@PathVariable String id) {
+   public ReceiptsPoints getPoints(@PathVariable Id id) {
        return receiptService.getReceiptsPoints(id);
    }
    //TODO add 401 and 404 handling

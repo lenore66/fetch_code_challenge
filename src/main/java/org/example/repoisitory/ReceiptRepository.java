@@ -5,7 +5,9 @@ import org.example.models.Receipt;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
-public interface ReceiptRepository extends MongoRepository<Receipt, String> {
-    Receipt findById(Id id);
+public interface ReceiptRepository extends MongoRepository<Receipt, Id> {
+
 }
