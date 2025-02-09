@@ -19,11 +19,13 @@ class ReceiptControllerSpec extends Specification{
 
     def " calls repository and returns the needed Receipt "(){
         given:
-        def id = [ id: "12222222"] as Id
+        def id = "12222222"
 
         def recieptPoints = [points: 32.0]as ReceiptsPoints
+
         when:
         def result = fixture.getPoints(id)
+
         then:
         1 * mockService.getReceiptsPoints(id) >> recieptPoints
         result.points == recieptPoints.points

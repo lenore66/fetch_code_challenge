@@ -1,9 +1,6 @@
 package org.example.controller;
 
-
-import jdk.jfr.ContentType;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.example.models.Id;
 import org.example.models.Receipt;
 import org.example.models.ReceiptsPoints;

@@ -22,7 +22,7 @@ class ReceiptServiceSpec extends  Specification {
     }
     def " calls repository and returns the needed Receipt "(){
         given:
-        def id = [ id: "12222222"] as Id
+        def id = "12222222"
 
         def items = [shortDescription: "yarn" , price:"6.49" ] as Item
         def receipt = [retailer: "Craft Store" ,  purchaseDate: "10/10/2020", purchaseTime: "09:20",  items: [items] , total:"6.49" ] as Receipt
@@ -32,14 +32,14 @@ class ReceiptServiceSpec extends  Specification {
         when:
         def result = fixture.getReceiptsPoints(id)
         then:
-        1 * receiptRepo.findById(id.id) >> Optional.of(receipt)
+        1 * receiptRepo.findById(id) >> Optional.of(receipt)
         1 * receiptUtil.calculatePoints(receipt) >> recieptPoints.points
         result.points == recieptPoints.points
     }
 
     def " calls repository and throws an error if no receipt exisits "(){
         given:
-        def id = [ id: "12222222"] as Id
+        def id = "12222222"
 
         def items = [shortDescription: "yarn" , price:"6.49" ] as Item
         def receipt = [retailer: "Craft Store" ,  purchaseDate: "10/10/2020", purchaseTime: "09:20",  items: [items] , total:"6.49" ] as Receipt
@@ -49,7 +49,7 @@ class ReceiptServiceSpec extends  Specification {
         when:
         def result = fixture.getReceiptsPoints(id)
         then:
-        1 * receiptRepo.findById(id.id) >>{  throw new EntityNotFoundException(" id not found")}
+        1 * receiptRepo.findById(id) >>{  throw new EntityNotFoundException(" id not found")}
         0 * receiptUtil.calculatePoints(receipt)
         thrown EntityNotFoundException
     }
