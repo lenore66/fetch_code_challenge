@@ -59,12 +59,11 @@ public class ReceiptPointsCalculatorUtil {
         return Double.parseDouble(total) > 10;
     }
 
-    private static final double POINT_MULTIPLIER = 0.2;
 
     private Double getPointsFromItemsDescription(List<Item> items) {
         return items.stream()
                 .filter(this::isEligibleForPoints)
-                .mapToDouble(item -> (Double.parseDouble(item.price) * POINT_MULTIPLIER))
+                .mapToDouble(item -> (Double.parseDouble(item.price) * 0.2))
                 .sum();
     }
 
