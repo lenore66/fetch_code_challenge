@@ -5,6 +5,6 @@ import org.example.models.Receipt;
 import org.example.models.ReceiptsPoints;
 
 public interface ReceiptService {
-    ReceiptsPoints getReceiptsPoints(Id id);
+    ReceiptsPoints getReceiptsPoints(String id);
     Id processReceipt(Receipt receiptId);
 }

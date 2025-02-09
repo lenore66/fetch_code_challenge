@@ -1,6 +1,7 @@
 package org.example.controller;
 
 
+import jdk.jfr.ContentType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.example.models.Id;
@@ -17,16 +18,14 @@ public class ReceiptController {
     @Autowired
    private  ReceiptService receiptService;
 
-
-   @GetMapping("/receipts/{id}/points")
-   public ReceiptsPoints getPoints(@PathVariable Id id) {
+   @RequestMapping(value = "receipts/{id}/points" , method = RequestMethod.GET)
+   public ReceiptsPoints getPoints(@PathVariable(name = "id", required = true) String id) {
        return receiptService.getReceiptsPoints(id);
    }
-   //TODO add 401 and 404 handling
-   @PostMapping("/receipts/process")
-    public Id getReceipt(@RequestBody Receipt receipt) {
 
+
+  @RequestMapping(value = "receipts/process", method = RequestMethod.POST )
+    public @ResponseBody Id getReceipt(@RequestBody(required = true) Receipt receipt ) {
        return receiptService.processReceipt(receipt);
-
    }
 }

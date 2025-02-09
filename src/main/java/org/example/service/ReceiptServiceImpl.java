@@ -1,5 +1,6 @@
 package org.example.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.example.models.Id;
 import org.example.models.Receipt;
@@ -19,31 +20,41 @@ public class ReceiptServiceImpl implements ReceiptService {
     @Autowired
     ReceiptRepository receiptRepository;
 
+
     @Autowired
     ReceiptPointsCalculatorUtil receiptPointsCalculatorUtil;
 
-    public ReceiptsPoints getReceiptsPoints(Id reciptId) {
+    public ReceiptsPoints getReceiptsPoints(String reciptId) {
         ReceiptsPoints receiptsPoints = new ReceiptsPoints();
 
-        Receipt receipt = receiptRepository.findById(reciptId).get();
+        Receipt receipt = Optional.of(receiptRepository.findById(reciptId).get()).orElseThrow(() -> new EntityNotFoundException("Receipt not found for ID: " + reciptId));
 
-        receiptsPoints.points =  receiptPointsCalculatorUtil.calculatePoints(receipt);
+        if (receipt != null) {
+            receiptsPoints.points = receiptPointsCalculatorUtil.calculatePoints(receipt);
+            return receiptsPoints;
+        } else {
+            return null;
+        }
 
-        return receiptsPoints;
 
     }
 
     @Override
     public Id processReceipt(Receipt receipt) {
-    if(receipt.getId() == null) {
-        Id id = new Id();
-      id.id = UUID.randomUUID().toString();
-      receipt.setId(id);
-      System.out.println(" Id saved for receipt is " + receipt.getId());
-     }
+        Id newId = new Id();
+        ensureReceiptHasId(receipt);
 
         receiptRepository.save(receipt);
-        return receipt.getId();
+
+        System.out.println(receipt.id + " id was saved to Database");
+        newId.id = receipt.id;
+        return newId;
+    }
+
+    private void ensureReceiptHasId(Receipt receipt) {
+        if (receipt.id == null) {
+            receipt.id = UUID.randomUUID().toString();
+        }
     }
 
 

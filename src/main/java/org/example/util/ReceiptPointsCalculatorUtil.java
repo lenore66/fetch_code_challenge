@@ -2,43 +2,45 @@ package org.example.util;
 
 import org.example.models.Item;
 import org.example.models.Receipt;
+import org.springframework.context.annotation.Configuration;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-
+@Configuration
 public class ReceiptPointsCalculatorUtil {
 
     public Double calculatePoints(Receipt receipt) {
 
         Double totalPoints = 0.0;
 
-        totalPoints += countLettersInRetailer(receipt.getRetailer());
+        totalPoints += countLettersInRetailer(receipt.retailer);
 
-        if (isTotalNumberRound(Double.parseDouble(receipt.getTotal()))) {
+        if (isTotalNumberRound(Double.parseDouble(receipt.total))) {
             totalPoints += 50;
         }
-        if (isTotalNumberQuarter(Double.parseDouble(receipt.getTotal()))) {
+
+        if (isTotalNumberQuarter(Double.parseDouble(receipt.total))) {
             totalPoints += 25;
         }
-        totalPoints = 5 * getPointsForItems(receipt.getItems());
+        totalPoints += getPointsForItems(receipt.items);
 
-        totalPoints = getPointsFromItemsDescription(receipt.getItems());
-        if (isGreaterThanTen(receipt.getTotal())) {
+        totalPoints += getPointsFromItemsDescription(receipt.items);
+        if (isGreaterThanTen(receipt.total)) {
             totalPoints += 5;
         }
         ;
-        // purchase date is odd.
-        if (isPurchaseDateOdd(receipt.getPurchaseDate())) {
+
+        if (isPurchaseDateOdd(receipt.purchaseDate)) {
             totalPoints += 6;
         }
 
-        //purchase is after 2:00pm and before 4:00pm
-        if (isPurchaseIsMadeInAfternoon(receipt.getPurchaseTime())) {
+
+        if (isPurchaseIsMadeInAfternoon(receipt.purchaseTime)) {
             totalPoints += 10;
         }
-        ;
+
         return totalPoints;
     }
 
@@ -62,22 +64,25 @@ public class ReceiptPointsCalculatorUtil {
     private Double getPointsFromItemsDescription(List<Item> items) {
         return items.stream()
                 .filter(this::isEligibleForPoints)
-                .mapToDouble(item -> (Double.parseDouble(item.getPrice()) * POINT_MULTIPLIER))
+                .mapToDouble(item -> (Double.parseDouble(item.price) * POINT_MULTIPLIER))
                 .sum();
     }
 
     private boolean isEligibleForPoints(Item item) {
-        return item.getShortDescription().trim().length() % 3 == 0;
+        return item.shortDescription.trim().length() % 3 == 0;
     }
 
     private Double getPointsForItems(List<Item> items) {
-        Double countOfItems = Double.valueOf(items.stream().count());
-        return countOfItems % 2;
+        Double countOfItems = Double.valueOf(items.size());
+
+        return  5.0 * (countOfItems /2);
     }
 
-    private Integer countLettersInRetailer(String retailer) {
-        char[] charArray = retailer.toCharArray();
-        return charArray.length;
+    private Double countLettersInRetailer(String retailer) {
+        return (double) retailer.chars()
+                .filter(Character::isLetterOrDigit)
+                .count();
+
     }
 
     private boolean isTotalNumberRound(Double total) {
@@ -85,6 +90,6 @@ public class ReceiptPointsCalculatorUtil {
     }
 
     private boolean isTotalNumberQuarter(Double total) {
-        return total % 25 == 0;
+        return total % 0.25 == 0;
     }
 }
